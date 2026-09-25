@@ -1,36 +1,19 @@
 package com.udgar.rag.learning.service;
 
-import org.springframework.http.MediaType;
+import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.RestClient;
 
 @Component
 public class RestClientService {
 
-    private final RestClient restClient;
+    private final ChatClient chatClient;
 
-    public RestClientService(RestClient restClient) {
-        this.restClient = restClient;
+
+    public RestClientService(ChatClient chatClient) {
+        this.chatClient = chatClient;
     }
 
-    public String testService() {
-        OllamaRequest request = new OllamaRequest("llama3.2", "just say hi", false);
-
-        OllamaResponse response = restClient.post()
-                .uri("/api/generate")
-                .contentType(MediaType.APPLICATION_JSON)
-                .body(request)
-                .retrieve()
-                .body(OllamaResponse.class);
-
-        return response != null ? response.response() : "";
+    public String answers(String question) {
+        return chatClient.prompt().user(question).call().content();
     }
-
-    public record OllamaRequest(String model, String prompt, boolean stream) {}
-
-    public record OllamaResponse(
-            String model,
-            String response,
-            boolean done
-    ) {}
 }
