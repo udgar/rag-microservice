@@ -1,4 +1,4 @@
-# rag-spring-boot-setup
+# RAG-spring-boot-setup
 In this project we setup a spring boot RAG application used in order to create a simple RAG application
 
 ## Tech stack:
