@@ -12,11 +12,6 @@ import org.springframework.web.client.RestClient;
 public class RestClientConfiguration {
 
     @Bean
-    RestClient restClient(@Value("${outbound.llm.request.api}") String baseUrl) {
-        return RestClient.builder().baseUrl(baseUrl).build();
-    }
-
-    @Bean
     ChatClient chatClient(@Value("${outbound.llm.request.api}") String baseUrl, ChatClient.Builder builder, VectorStore store) {
         return builder
                 .defaultSystem("You are a chat assistant that only answers questions, regarding the information stored in vector store," +
