@@ -69,14 +69,17 @@ And finally from service we call chat client in order to call upon LLMs.
 The chat client configuration looks like this. Here we add system prompt and default advisor as vector_store so that
 vector similarity searching is done and chunks are augmented when sending the request to LLM
 ```java
-    @Bean
-    ChatClient chatClient(ChatClient.Builder builder, VectorStore store) {
-        return builder
-                .defaultSystem("You are a chat assistant that only answers questions, regarding the information stored in vector store," +
-                        "if asked for anything else deny the request ")
-                .defaultAdvisors(QuestionAnswerAdvisor.builder(store).build())
-                .build();
-    }
+// Here when Chat client is created first default question answer advisor is set, who retrieves the context of user's question from the vector store and add it to prompt
+// Default system provides the default system prompt that is sent via all the prompt provided by the user
+//search request is used to instruct to get top 2 similar search from the similarity search instead of all of them.
+@Bean
+ChatClient chatClient(ChatClient.Builder builder, VectorStore store) {
+    return builder
+            .defaultSystem("You are a chat assistant that only answers questions, regarding the information stored in vector store," +
+                    "if asked for anything else deny the request ")
+            .defaultAdvisors(QuestionAnswerAdvisor.builder(store).searchRequest(SearchRequest.builder().topK(2).build()).build())
+            .build();
+}
 ```
 
 Currently this is the whole process that is being carried out, nothing else is done here.
